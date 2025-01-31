@@ -35,27 +35,27 @@ Also clone `.env.example` -> `.env` and fill in the details according to your lo
 
 ### Enjoy
 
-You basic sign in flow should look like this, the following is React code.
+You basic sign in flow should look like this.
 
 ```ts
 import { onUrl, start } from "@fabianlars/tauri-plugin-oauth";
 import { logtoClient } from "../lib/logto";
 
-// ...
-  async function handleSignin() {
-		const port = await start();
-		await logtoClient.signIn(`http://localhost:${port}`);
+// when the login button is clicked
+async function handleSignin() {
+  const port = await start();
+  await logtoClient.signIn(`http://localhost:${port}`);
 
-		await onUrl(async (url) => {
-			await logtoClient.handleSignInCallback(url);
-			if (await logtoClient.isAuthenticated()) {
-				alert("Authentication successful!");
-        // stop callback server
-			} else {
-				alert("Authentication failed!");
-			}
-		});
-	}
+  await onUrl(async (url) => {
+    await logtoClient.handleSignInCallback(url);
+    if (await logtoClient.isAuthenticated()) {
+      alert("Authentication successful!");
+      // stop callback server
+    } else {
+      alert("Authentication failed!");
+    }
+  });
+}
 ```
 
 
