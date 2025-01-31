@@ -1,9 +1,9 @@
 import { onUrl, start } from "@fabianlars/tauri-plugin-oauth";
 import { logtoClient } from "../lib/logto";
 import { isTauri } from "../lib/detect-tauri";
+import { useEffect, useState } from "react";
 
 const LoginButton = () => {
-
 	async function handleTauriLogin() {
 		const port = await start();
 		await logtoClient.signIn(`http://localhost:${port}`);
@@ -19,7 +19,8 @@ const LoginButton = () => {
 	}
 
 	async function handleWebLogin() {
-		await logtoClient.signIn("http://localhost:1420/callback");
+		// also add this to your logto application's valid redirect uri's
+		await logtoClient.signIn(new URL(`${window.location.origin}/callback`));
 	}
 
 	return (
@@ -29,12 +30,40 @@ const LoginButton = () => {
 	);
 };
 
-export const HomePage = () => {
-	console.log(window);
+const Status = () => {
+	const [properties, setProperties] = useState<Record<string, string>>({});
+
+	async function onMount() {
+		setProperties({
+			"Logged In": (await logtoClient.isAuthenticated()) ? "true" : "false",
+			"Access Token": await logtoClient.getAccessToken(),
+		});
+	}
+	useEffect(() => {
+		onMount();
+	});
+
 	return (
-		<div>
-			<h1>Home</h1>
-			<LoginButton />
-		</div>
+		<ul>
+			<li>Mode: {isTauri ? "Tauri" : "Web"}</li>
+			{Object.entries(properties).map(([key, value]) => (
+				<li key={key}>
+					{key}: {value}
+				</li>
+			))}
+		</ul>
+	);
+};
+
+export const HomePage = () => {
+	return (
+		<main>
+			<br />
+			<div className="container">
+				<h1>Tauri + Logto OAuth2</h1>
+				<LoginButton />
+				<Status />
+			</div>
+		</main>
 	);
 };
