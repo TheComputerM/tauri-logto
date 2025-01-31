@@ -1,3 +1,12 @@
+const LoginButton = () => {
+	return <button type="button">Login</button>;
+};
+
 export const HomePage = () => {
-	return <h1>Login</h1>;
+	return (
+		<div>
+			<h1>Home</h1>
+			<LoginButton />
+		</div>
+	);
 };
