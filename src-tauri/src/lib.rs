@@ -1,12 +1,17 @@
+use tauri::Emitter;
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let mut builder = tauri::Builder::default();
 
     #[cfg(desktop)]
     {
-        builder = builder.plugin(tauri_plugin_single_instance::init(|_app, argv, _cwd| {
-          println!("a new app instance was opened with {argv:?} and the deep link event was already triggered");
-          // when defining deep link schemes at runtime, you must also check `argv` here
+        builder = builder.plugin(tauri_plugin_single_instance::init(|app, argv, _cwd| {
+            if argv.len() > 1 && argv[1].starts_with("tauri-logto://callback") {
+                let redirect_uri = argv[1].clone();
+                app.emit("redirect_uri", redirect_uri)
+                    .expect("failed to emit redirect_uri");
+            }
         }));
     }
 
@@ -18,6 +23,9 @@ pub fn run() {
             {
                 use tauri_plugin_deep_link::DeepLinkExt;
                 app.deep_link().register("tauri-logto")?;
+                app.deep_link().on_open_url(|event| {
+                    println!("deep link URLs: {:?}", event.urls());
+                });
             }
             Ok(())
         })
