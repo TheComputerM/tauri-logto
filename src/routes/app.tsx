@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { logtoClient } from "../lib/logto";
+import { isTauri } from "../lib/detect-tauri";
 
 const Logout = () => {
 	const navigate = useNavigate();
@@ -9,8 +10,15 @@ const Logout = () => {
 		navigate("/");
 	}
 
+	async function handleWebLogout() {
+		await logtoClient.signOut("http://localhost:1420/");
+	}
+
 	return (
-		<button type="button" onClick={handleTauriLogout}>
+		<button
+			type="button"
+			onClick={isTauri ? handleTauriLogout : handleWebLogout}
+		>
 			Logout
 		</button>
 	);

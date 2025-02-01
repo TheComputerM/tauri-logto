@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { logtoClient } from "../lib/logto";
+import { isTauri } from "../lib/detect-tauri";
 
 const Login = () => {
 	const navigate = useNavigate();
@@ -19,8 +20,15 @@ const Login = () => {
 		);
 	}
 
+	async function handleWebLogin() {
+		await logtoClient.signIn("http://localhost:1420/callback");
+		if (await logtoClient.isAuthenticated()) {
+			navigate("/app");
+		}
+	}
+
 	return (
-		<button type="button" onClick={handleTauriLogin}>
+		<button type="button" onClick={isTauri ? handleTauriLogin : handleWebLogin}>
 			Login
 		</button>
 	);
@@ -44,6 +52,7 @@ export const HomePage = () => {
 			<div className="container">
 				<h1>Tauri + Logto OAuth2</h1>
 				<Login />
+				<p>Mode: {isTauri ? "Tauri" : "Web"}</p>
 			</div>
 		</main>
 	);
