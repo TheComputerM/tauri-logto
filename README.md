@@ -1,6 +1,8 @@
 # Tauri + OAuth2 (Logto)
 
-This repository has a tauri app that works as both native and a plain vanilla web build. Inspect its codebase to learn more. There are two main ways to get OAuth2 working on Tauri.
+This repository has a tauri app that works as both native and a plain vanilla web build. Inspect its codebase to learn more.
+
+There are two main ways to get OAuth2 working on Tauri.
 
 1) Using Deeplinks, more mobile app like
 2) Using a separate server to catch the redirect url, using the oauth-plugin
@@ -10,14 +12,14 @@ This repository has a tauri app that works as both native and a plain vanilla we
 ### Step 1: Add plugins and dependencies
 
 - [tauri deep linking plugin](https://v2.tauri.app/plugin/deep-linking/)
-- [tauri single instacne plugin](https://v2.tauri.app/plugin/single-instance/) - recommened
+- [tauri single instacne plugin](https://v2.tauri.app/plugin/single-instance/) - recommended
 - [tauri opener plugin](https://v2.tauri.app/plugin/opener/)
 - [tauri oauth plugin](https://github.com/FabianLars/tauri-plugin-oauth)
 - [@logto/browser](https://www.npmjs.com/package/@logto/browser)
 
 After adding these, make sure you configure these for the platforms of your choosing.
 
-For this example, I am assuming I have registered `tauri-logto://` as a deep link to the app. I recommend dynamically registering the callback url on desktop platforms.
+For this example, I am assuming `tauri-logto://` as a deep link to the app. I recommend dynamically registering the deep link on desktop platforms.
 
 ----
 
